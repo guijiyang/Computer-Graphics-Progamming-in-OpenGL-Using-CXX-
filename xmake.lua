@@ -7,13 +7,11 @@ set_languages("cxxlatest")
 add_rules("mode.debug", "mode.release","mode.releasedbg")
 
 add_requireconfs("*", {system=false})
-add_requires("glfw", "opengl","glew")
+add_requires("glfw", "opengl","glew","glm","easyloggingpp")
+-- add_requires("easyloggingpp",{debug=true})
 
 -- add_requires("opengl")
 -- add_requires("")
 includes("**/xmake.lua")
 
--- if has_package("opengl") then
---   print("OpenGL founded")
--- end
-
+add_includedirs("src")
