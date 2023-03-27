@@ -2,20 +2,39 @@
  * @Author: jiyang Gui
  * @Date: 2023-03-23 18:36:19
  * @LastEditors: jiyang Gui
- * @LastEditTime: 2023-03-25 22:11:15
+ * @LastEditTime: 2023-03-27 13:53:26
  * @Description:
  * guijiyang@163.com
  * Copyright (c) 2023 by jiyang Gui/GuisGame, All Rights Reserved.
  */
 #include <Utils.h>
+#include <stb_image.h>
 #include <easylogging++.h>
 #include <format>
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
+#include <string>
 
 namespace opengltest {
 using namespace std;
-void printShaderLog(GLuint shader) {
+
+Image::Image(const char *filename) noexcept {
+  data_ = stbi_load(filename, &width_, &height_, &channels_, STBI_rgb_alpha);
+  if (!data_) {
+    // register utils logger if not already registered
+    el::Loggers::getLogger("utils");
+    CLOG(WARNING, "utils") << "Failed to load image: " << stbi_failure_reason();
+  }
+}
+
+Image::~Image() noexcept {
+    if (data_) {
+      stbi_image_free(data_);
+    }
+  }
+
+static void printShaderLog(GLuint shader) {
   int len = 0;
   int chWrittn = 0;
   char *log;
@@ -45,6 +64,7 @@ static void printProgramLog(int prog) {
     free(log);
   }
 }
+
 bool checkOpenGLError() {
   bool foundError = false;
   int glErr = glGetError();
@@ -75,7 +95,7 @@ string readFile(const char *filename) {
   return contents;
 }
 GLuint createShaderProgram() {
-  // register utils logger
+  // register utils logger if not already registered
   el::Loggers::getLogger("utils");
 
   GLint vert_compiled;
@@ -118,7 +138,7 @@ GLuint createShaderProgram() {
   if (linked != 1) {
     // auto logger = el::Loggers::getLogger("utils");
     // logger->warn("linked failed!");
-    CLOG(WARNING, "utils")<<"linked failed!";
+    CLOG(WARNING, "utils") << "linked failed!";
     // cout << "linked failed!" << endl;
     printProgramLog(vf_program);
   }

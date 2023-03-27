@@ -10,6 +10,7 @@ add_requireconfs("*", {system=false})
 add_requires("glfw", "opengl","glew","glm","easyloggingpp")
 -- add_requires("easyloggingpp",{debug=true})
 
+add_defines("STB_IMAGE_IMPLEMENTATION")
 -- add_requires("opengl")
 -- add_requires("")
 includes("**/xmake.lua")
