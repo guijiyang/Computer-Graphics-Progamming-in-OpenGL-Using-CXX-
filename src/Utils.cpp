@@ -2,17 +2,17 @@
  * @Author: jiyang Gui
  * @Date: 2023-03-23 18:36:19
  * @LastEditors: jiyang Gui
- * @LastEditTime: 2023-03-27 13:53:26
+ * @LastEditTime: 2023-03-30 12:29:46
  * @Description:
  * guijiyang@163.com
  * Copyright (c) 2023 by jiyang Gui/GuisGame, All Rights Reserved.
  */
 #include <Utils.h>
-#include <stb_image.h>
 #include <easylogging++.h>
 #include <format>
 #include <fstream>
 #include <iostream>
+#include <stb_image.h>
 #include <stdexcept>
 #include <string>
 
@@ -20,6 +20,7 @@ namespace opengltest {
 using namespace std;
 
 Image::Image(const char *filename) noexcept {
+  stbi_set_flip_vertically_on_load(1);
   data_ = stbi_load(filename, &width_, &height_, &channels_, STBI_rgb_alpha);
   if (!data_) {
     // register utils logger if not already registered
@@ -28,11 +29,30 @@ Image::Image(const char *filename) noexcept {
   }
 }
 
-Image::~Image() noexcept {
-    if (data_) {
-      stbi_image_free(data_);
-    }
+Image::Image(aiTexture *texture) noexcept {
+  // stbi_set_flip_vertically_on_load(1);
+  if (texture->mHeight == 0) {
+    // texture->CheckFormat("png");
+    data_ = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(texture->pcData) , texture->mWidth*4, &width_,
+                                       &height_, &channels_, 0);
   }
+  else {
+  data_ = stbi_load_from_memory(reinterpret_cast<const stbi_uc*>(texture->pcData) , texture->mWidth*texture->mHeight*4, &width_,
+                                       &height_, &channels_, 0);
+  }
+
+  if (!data_) {
+    // register utils logger if not already registered
+    el::Loggers::getLogger("utils");
+    CLOG(WARNING, "utils") << "Failed to load image: " << stbi_failure_reason();
+  }
+}
+
+Image::~Image() noexcept {
+  if (data_) {
+    stbi_image_free(data_);
+  }
+}
 
 static void printShaderLog(GLuint shader) {
   int len = 0;
