@@ -2,7 +2,7 @@
  * @Author: jiyang Gui
  * @Date: 2023-03-25 19:13:29
  * @LastEditors: jiyang Gui
- * @LastEditTime: 2023-03-30 16:00:00
+ * @LastEditTime: 2023-04-01 14:24:31
  * @Description:
  * guijiyang@163.com
  * Copyright (c) 2023 by jiyang Gui/GuisGame, All Rights Reserved.
@@ -31,17 +31,15 @@ void Drawer::setupVertices() {
   auto indices = sphere.getIndices();
   indices_nums_ = indices.size();
   auto vert_nums = vertices.size();
-  std::vector<float> pvertices{};
-  pvertices.reserve(vert_nums * 3);
-  std::vector<float> ptexcoords{};
-  ptexcoords.reserve(vert_nums * 2);
+  std::vector<float> pvertices(vert_nums * 3);
+  std::vector<float> ptexcoords(vert_nums * 2);
 
   for (uint32_t i = 0; i < vert_nums; i++) {
-    pvertices.push_back(vertices[i].x);
-    pvertices.push_back(vertices[i].y);
-    pvertices.push_back(vertices[i].z);
-    ptexcoords.push_back(texcoords[i].s);
-    ptexcoords.push_back(texcoords[i].t);
+    pvertices[i * 3] = vertices[i].x;
+    pvertices[i * 3 + 1] = vertices[i].y;
+    pvertices[i * 3 + 2] = vertices[i].z;
+    ptexcoords[i * 2] = texcoords[i].s;
+    ptexcoords[i * 2 + 1] = texcoords[i].t;
   }
 
   glGenVertexArrays(static_cast<GLsizei>(vert_arr_obj_.size()),
@@ -63,23 +61,24 @@ void Drawer::setupVertices() {
 }
 
 void Drawer::setupTexture() {
-  std::array<const char*, 3> image_names{"texture/sun.jpg","texture/earth.jpg","texture/moon.jpg"};
+  std::array<const char *, 3> image_names{
+      "texture/sun.jpg", "texture/earth.jpg", "texture/moon.jpg"};
   for (auto const name : image_names) {
-  GLuint texture_id;
-  Image image{name};
-  glGenTextures(1, &texture_id);
-  glBindTexture(GL_TEXTURE_2D, texture_id);
+    GLuint texture_id;
+    Image image{name};
+    glGenTextures(1, &texture_id);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
 
-  texture_ids_.push_back(texture_id);
+    texture_ids_.push_back(texture_id);
 
-  // Set texture parameters
-  setTextureParameters();
+    // Set texture parameters
+    setTextureParameters();
 
-  // Check for anisotropic filtering extension
-  setAnisotropicFiltering();
+    // Check for anisotropic filtering extension
+    setAnisotropicFiltering();
 
-  // Generate mipmaps and upload texture data
-  uploadTextureData(image.width(),image.height(),image.data());
+    // Generate mipmaps and upload texture data
+    uploadTextureData(image.width(), image.height(), image.data());
   }
 }
 
@@ -101,9 +100,9 @@ void Drawer::setAnisotropicFiltering() {
   }
 }
 
-void Drawer::uploadTextureData(int width, int height, const void* img_data) {
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width,height, 0,
-               GL_RGBA, GL_UNSIGNED_BYTE, img_data);
+void Drawer::uploadTextureData(int width, int height, const void *img_data) {
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+               GL_UNSIGNED_BYTE, img_data);
   glGenerateMipmap(GL_TEXTURE_2D);
 }
 
@@ -154,7 +153,8 @@ void Drawer::enableDepthTest() {
 // Draw the sphere
 void Drawer::drawSphere() {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vert_buf_obj_[2]);
-  glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices_nums_), GL_UNSIGNED_INT, 0);
+  glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices_nums_),
+                 GL_UNSIGNED_INT, 0);
 }
 
 void Drawer::display(GLFWwindow *window, double current_time) {
@@ -163,9 +163,8 @@ void Drawer::display(GLFWwindow *window, double current_time) {
   glUseProgram(rendering_program_);
 
   mv_loc_ = glGetUniformLocation(rendering_program_, "mv_mat");
-  proj_loc_ = glGetUniformLocation(rendering_program_, "proj_mat");
 
-  glUniformMatrix4fv(proj_loc_, 1, GL_FALSE, glm::value_ptr(pmat_));
+  glUniformMatrix4fv(glGetUniformLocation(rendering_program_, "proj_mat"), 1, GL_FALSE, glm::value_ptr(pmat_));
 
   // push view matrix onto the stack
   vmat_ = glm::translate(glm::mat4(1.0f),

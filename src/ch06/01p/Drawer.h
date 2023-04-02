@@ -29,7 +29,7 @@ class Drawer {
   GLuint rendering_program_;
 
   GLuint mv_loc_;
-  GLuint proj_loc_;
+  // GLuint proj_loc_;
   GLFWwindow *p_window_;
 
   glm::mat4 mmat_;

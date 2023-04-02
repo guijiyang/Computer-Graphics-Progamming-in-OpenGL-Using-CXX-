@@ -2,12 +2,13 @@
  * @Author: jiyang Gui
  * @Date: 2023-03-27 22:25:34
  * @LastEditors: jiyang Gui
- * @LastEditTime: 2023-03-30 15:10:08
+ * @LastEditTime: 2023-04-02 09:48:56
  * @Description:
  * guijiyang@163.com
  * Copyright (c) 2023 by jiyang Gui/GuisGame, All Rights Reserved.
  */
 #include "Drawer.h"
+#include "easylogging++.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <stdexcept>
@@ -17,31 +18,27 @@ namespace opengltest {
 glm::mat4 Drawer::kProjMat{};
 
 void Drawer::setupVertices() {
-  // sets up the vertices, texture coordinates, and normals for the sphere
-  // object.
-  auto indices = sphere_.getIndices();
-  auto verts = sphere_.getVertices();
-  auto texcoords = sphere_.getTexCoords();
-  auto norms = sphere_.getNormals();
-  
-  // It generates vertex array objects and buffer objects, and binds them to the
-  // appropriate buffers.
+  auto indices = torus_.getIndices();
+  auto verts = torus_.getVertices();
+  auto texcoords = torus_.getTexCoords();
+  auto norms = torus_.getNormals();
+
   std::vector<float> pvalues;
   std::vector<float> tvalues;
   std::vector<float> nvalues;
 
-  auto indice_nums = sphere_.getNumIndices();
-  for (uint32_t i = 0; i < indice_nums; i++) {
-    pvalues.push_back(verts[indices[i]].x);
-    pvalues.push_back(verts[indices[i]].y);
-    pvalues.push_back(verts[indices[i]].z);
+  auto vert_nums = torus_.getNumVertices();
+  for (uint32_t i = 0; i < vert_nums; i++) {
+    pvalues.push_back(verts[i].x);
+    pvalues.push_back(verts[i].y);
+    pvalues.push_back(verts[i].z);
 
-    tvalues.push_back(texcoords[indices[i]].s);
-    tvalues.push_back(texcoords[indices[i]].t);
+    tvalues.push_back(texcoords[i].s);
+    tvalues.push_back(texcoords[i].t);
 
-    nvalues.push_back(norms[indices[i]].x);
-    nvalues.push_back(norms[indices[i]].y);
-    nvalues.push_back(norms[indices[i]].z);
+    nvalues.push_back(norms[i].x);
+    nvalues.push_back(norms[i].y);
+    nvalues.push_back(norms[i].z);
   }
 
   glGenVertexArrays(static_cast<GLsizei>(vert_arr_obj_.size()),
@@ -60,6 +57,10 @@ void Drawer::setupVertices() {
 
   glBindBuffer(GL_ARRAY_BUFFER, vert_buf_obj_[2]);
   glBufferData(GL_ARRAY_BUFFER, nvalues.size() * 4, nvalues.data(),
+               GL_STATIC_DRAW);
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vert_buf_obj_[3]);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * 4, indices.data(),
                GL_STATIC_DRAW);
 }
 
@@ -86,7 +87,7 @@ void Drawer::setTextureParameters() {
                   GL_LINEAR_MIPMAP_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
                   GL_LINEAR_MIPMAP_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }
 
@@ -107,23 +108,23 @@ void Drawer::uploadTextureData(const Image &image) {
 
 void Drawer::init(GLFWwindow *window) {
   rendering_program_ = createShaderProgram();
-  cam_pos_.x = cam_pos_.y = 0.0f;
-  cam_pos_.z = 8.0f;
+  // cam_pos_.x = cam_pos_.y = 0.0f;
+  // cam_pos_.z = 8.0f;
   setupVertices();
-  texture_id_ = setupTexture("texture/earth.jpg");
+  // texture_id_ = setupTexture("texture/rectangleBricks.jpg");
   int width, height;
   glfwGetFramebufferSize(window, &width, &height);
   auto aspect = static_cast<float>(width) / height;
   kProjMat = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 1000.0f);
 }
 
-// Refactored code for displaying a sphere with texture and lighting
+// displaying a sphere with  lighting
 void Drawer::display(GLFWwindow *window, double current_time) {
   clearBuffers(); // Clear depth and color buffers
   glUseProgram(rendering_program_);
-  setLightDirection();       // Set the direction of the light source
   setMatrices(current_time); // Set the projection and model-view matrices
-  activateTexture(); // Activate the texture and bind it to a texture unit
+  setLightDirection();       // Set the direction of the light source
+  // activateTexture(); // Activate the texture and bind it to a texture unit
   // pushViewMatrix(); // Push the view matrix onto the stack
 
   // Bind vertex buffer objects and enable vertex attributes
@@ -132,7 +133,8 @@ void Drawer::display(GLFWwindow *window, double current_time) {
   enableVertexAttribute(2, 3, vert_buf_obj_[2]);
 
   enableDepthTest(); // Enable depth testing
-  drawSphere();      // Draw the sphere
+
+  drawSphere(); // Draw the sphere
 }
 
 // Clear depth and color buffers
@@ -142,17 +144,69 @@ void Drawer::clearBuffers() {
 
 // Set the direction of the light source
 void Drawer::setLightDirection() {
-  glm::vec3 lightDirection = glm::normalize(glm::vec3(1.0f, 1.0f, 1.0f));
-  glUniform3fv(glGetUniformLocation(rendering_program_, "lightDirection"), 1,
-               glm::value_ptr(lightDirection));
+  // set up lights based on te current light's position
+  current_light_pos_ = glm::vec3(initial_light_loc_.x, initial_light_loc_.y,
+                                 initial_light_loc_.z);
+  installLights();
+  // build the inverse-transpose of the MV matrix by concatenating matrices v
+  // and m, as before
+  auto inv_tr_mat = glm::transpose(glm::inverse(mvmat_));
+  glUniformMatrix4fv(glGetUniformLocation(rendering_program_, "norm_matrix"), 1,
+                     GL_FALSE, glm::value_ptr(inv_tr_mat));
+}
+
+void Drawer::installLights() {
+  // convert light's position to view space, and save it in a float array
+  light_pos_v = glm::vec3(vmat_ * glm::vec4(current_light_pos_, 1.0));
+  light_pos_ = {light_pos_v.x, light_pos_v.y, light_pos_v.z};
+
+  // set the uniform light and material values in the shader
+  glProgramUniform4fv(rendering_program_,
+                      glGetUniformLocation(rendering_program_, "globalAmbient"),
+                      1, global_ambient_.data());
+  // el::Loggers::getLogger("Drawer");
+  // CLOG(INFO, "Drawer") << global_ambient_[0] << " " << global_ambient_[1] <<
+  // " "
+  //                      << global_ambient_[2];
+  glProgramUniform4fv(rendering_program_,
+                      glGetUniformLocation(rendering_program_, "light.ambient"),
+                      1, light_ambient_.data());
+  glProgramUniform4fv(rendering_program_,
+                      glGetUniformLocation(rendering_program_, "light.diffuse"),
+                      1, light_diffuse_.data());
+  glProgramUniform4fv(
+      rendering_program_,
+      glGetUniformLocation(rendering_program_, "light.specular"), 1,
+      light_specular_.data());
+  glProgramUniform3fv(
+      rendering_program_,
+      glGetUniformLocation(rendering_program_, "light.position"), 1,
+      reinterpret_cast<float *>(&light_pos_));
+  glProgramUniform4fv(
+      rendering_program_,
+      glGetUniformLocation(rendering_program_, "material.ambient"), 1,
+      goldAmbient().data());
+  glProgramUniform4fv(
+      rendering_program_,
+      glGetUniformLocation(rendering_program_, "material.diffuse"), 1,
+      goldDiffuse().data());
+  glProgramUniform4fv(
+      rendering_program_,
+      glGetUniformLocation(rendering_program_, "material.specular"), 1,
+      goldSpecular().data());
+  glProgramUniform1f(
+      rendering_program_,
+      glGetUniformLocation(rendering_program_, "material.shininess"),
+      goldShininess());
 }
 
 // Set the projection and model-view matrices
 void Drawer::setMatrices(double current_time) {
   glUniformMatrix4fv(glGetUniformLocation(rendering_program_, "proj_mat"), 1,
                      GL_FALSE, glm::value_ptr(kProjMat));
-  mvmat_ = glm::translate(glm::mat4(1.0f),
-                          glm::vec3(-cam_pos_.x, -cam_pos_.y, -cam_pos_.z)) *
+  vmat_ = glm::translate(glm::mat4(1.0f),
+                         glm::vec3(-cam_pos_.x, -cam_pos_.y, -cam_pos_.z));
+  mvmat_ = vmat_ *
            glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)) *
            glm::rotate(glm::mat4(1.0f), static_cast<float>(current_time),
                        glm::vec3(0.0f, 1.0f, 0.0f));
@@ -181,16 +235,17 @@ void Drawer::enableDepthTest() {
 
 // Draw the sphere
 void Drawer::drawSphere() {
-  glDrawArrays(GL_TRIANGLES, 0, sphere_.getNumIndices());
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vert_buf_obj_[3]);
+  glDrawElements(GL_TRIANGLES, torus_.getNumIndices(), GL_UNSIGNED_INT, 0);
 }
 
-void Drawer::run() {
+void Drawer::run(const char *filename) {
   if (!glfwInit()) {
     throw std::runtime_error("failed to initialize glfw");
   }
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-  auto p_window = glfwCreateWindow(600, 600, "6_1", nullptr, nullptr);
+  auto p_window = glfwCreateWindow(600, 600, filename, nullptr, nullptr);
   glfwMakeContextCurrent(p_window);
 
   if (glewInit() != GLEW_OK) {

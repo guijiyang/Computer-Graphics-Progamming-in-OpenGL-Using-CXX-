@@ -2,19 +2,15 @@
  * @Author: jiyang Gui
  * @Date: 2023-03-28 16:24:24
  * @LastEditors: jiyang Gui
- * @LastEditTime: 2023-04-01 16:10:07
+ * @LastEditTime: 2023-04-01 17:31:28
  * @Description:
  * guijiyang@163.com
  * Copyright (c) 2023 by jiyang Gui/GuisGame, All Rights Reserved.
  */
 
 #include "Torus.h"
-// #include "glm/ext/matrix_float4x4.hpp"
-// #include "glm/ext/matrix_transform.hpp"
-// #include "glm/ext/vector_float3.hpp"
-#include "glm/geometric.hpp"
 #include <glm/gtx/compatibility.hpp>
-#include <stdint.h>
+// #include <stdint.h>
 
 namespace opengltest {
 Torus::Torus(float inner_radius, float outer_radius, uint8_t precision)

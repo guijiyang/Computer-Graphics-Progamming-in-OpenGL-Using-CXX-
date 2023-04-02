@@ -2,7 +2,7 @@
  * @Author: jiyang Gui
  * @Date: 2023-03-27 22:13:31
  * @LastEditors: jiyang Gui
- * @LastEditTime: 2023-03-30 11:19:00
+ * @LastEditTime: 2023-04-01 14:24:57
  * @Description:
  * guijiyang@163.com
  * Copyright (c) 2023 by jiyang Gui/GuisGame, All Rights Reserved.
@@ -29,10 +29,10 @@ private:
   // std::pmr::vector<GLuint> tex_buf_obj_{&memory_pool_};
   // std::pmr::vector<GLuint> idx_buf_obj_{&memory_pool_};
   Position cam_pos_;
-  // represent location of model view matrix in shader
-  GLuint mv_loc_;
-  // represent projection matrix in shader
-  GLuint proj_loc_;
+  // // represent location of model view matrix in shader
+  // GLuint mv_loc_;
+  // // represent projection matrix in shader
+  // GLuint proj_loc_;
   // a shader program ID
   GLuint rendering_program_;
   // projection matrix

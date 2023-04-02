@@ -1,0 +1,44 @@
+#version 450
+
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec2 texcoord;
+layout(location = 2) in vec3 normals;
+out vec3 varingNormal;   // eye-space vertex normal
+out vec3 varingLight1Dir; // vector pointing to the light1
+out vec3 varingLight2Dir; // vector pointing to the light2
+out vec3 varingVertPos;  // vertex position in eye space
+// out vec2 tc;
+// out vec3 fragNormal;
+
+struct PositionLight {
+  vec4 ambient;
+  vec4 diffuse;
+  vec4 specular;
+  vec3 position;
+};
+
+struct Material {
+  vec4 ambient;
+  vec4 diffuse;
+  vec4 specular;
+  float shininess;
+};
+
+uniform vec4 globalAmbient;
+uniform mat4 mv_mat;
+uniform mat4 proj_mat;
+uniform mat4 norm_matrix; // for transforming normals
+uniform PositionLight light1;
+uniform PositionLight light2;
+
+void main() {
+  // output vertex position, light direction, and normal to the rasterizer for
+  // interpolation
+  varingVertPos = (mv_mat * vec4(position, 1.0)).xyz;
+  varingLight1Dir = light1.position - varingVertPos;
+  varingLight2Dir = light2.position - varingVertPos;
+  varingNormal = (norm_matrix * vec4(normals, 1.0)).xyz;
+  gl_Position = proj_mat * mv_mat * vec4(position, 1.0);
+  // tc = texcoord;
+  // fragNormal = normals;
+}
