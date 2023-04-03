@@ -39,7 +39,7 @@ void main() {
 
   vec3 spotl = normalize(light.direction);
 
-  float spotFactor = dot(l, spotl);
+  float spotFactor = dot(-l, spotl);
 
   if (spotFactor > cos(radians(light.cutoff))) {
     vec3 ambient =

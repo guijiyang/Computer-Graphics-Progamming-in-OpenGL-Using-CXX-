@@ -2,7 +2,7 @@
  * @Author: jiyang Gui
  * @Date: 2023-03-27 22:25:34
  * @LastEditors: jiyang Gui
- * @LastEditTime: 2023-04-02 20:11:32
+ * @LastEditTime: 2023-04-03 09:40:15
  * @Description:
  * guijiyang@163.com
  * Copyright (c) 2023 by jiyang Gui/GuisGame, All Rights Reserved.
@@ -255,7 +255,7 @@ void Drawer::setMatrices(double current_time) {
   mvmat_ = vmat_ *
            glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)) *
            glm::rotate(glm::mat4(1.0f), static_cast<float>(current_time),
-                       glm::vec3(0.0f, 1.0f, 0.0f));
+                       glm::vec3(1.0f, 0.0f, 0.0f));
   glUniformMatrix4fv(glGetUniformLocation(rendering_program_, "mv_mat"), 1,
                      GL_FALSE, glm::value_ptr(mvmat_));
 }

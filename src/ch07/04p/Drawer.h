@@ -2,7 +2,7 @@
  * @Author: jiyang Gui
  * @Date: 2023-03-28 18:41:04
  * @LastEditors: jiyang Gui
- * @LastEditTime: 2023-04-02 18:59:31
+ * @LastEditTime: 2023-04-03 09:42:04
  * @Description:
  * guijiyang@163.com
  * Copyright (c) 2023 by jiyang Gui/GuisGame, All Rights Reserved.
@@ -24,7 +24,7 @@ private:
   Position cam_pos_{0.f, 1.f, 5.f};
 
   // spot light location
-  Position light_loc_{0.0f, 0.0f, 1.0f};
+  Position light_loc_{0.0f, 0.0f, 2.0f};
   // spot light direction
   Position light_direction_{0.f, 0.f, -1.f};
   // spot light cut off angle
