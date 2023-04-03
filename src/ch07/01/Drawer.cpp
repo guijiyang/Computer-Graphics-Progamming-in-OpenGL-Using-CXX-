@@ -2,10 +2,10 @@
  * @Author: jiyang Gui
  * @Date: 2023-04-01 18:22:13
  * @LastEditors: jiyang Gui
- * @LastEditTime: 2023-04-01 18:45:53
- * @Description: 
+ * @LastEditTime: 2023-04-04 09:46:07
+ * @Description:
  * guijiyang@163.com
- * Copyright (c) 2023 by jiyang Gui/GuisGame, All Rights Reserved. 
+ * Copyright (c) 2023 by jiyang Gui/GuisGame, All Rights Reserved.
  */
 #include "Drawer.h"
 #include <glm/gtc/matrix_transform.hpp>
@@ -122,7 +122,7 @@ void Drawer::display(GLFWwindow *window, double current_time) {
   clearBuffers(); // Clear depth and color buffers
   glUseProgram(rendering_program_);
   setMatrices(current_time); // Set the projection and model-view matrices
-  setLightDirection();       // Set the direction of the light source
+  installLights();       // Set the direction of the light source
   // activateTexture(); // Activate the texture and bind it to a texture unit
   // pushViewMatrix(); // Push the view matrix onto the stack
 
@@ -131,32 +131,23 @@ void Drawer::display(GLFWwindow *window, double current_time) {
   enableVertexAttribute(1, 2, vert_buf_obj_[1]);
   enableVertexAttribute(2, 3, vert_buf_obj_[2]);
 
-  enableDepthTest(); // Enable depth testing
+  // enableDepthTest(); // Enable depth testing
   drawSphere();      // Draw the sphere
 }
 
 // Clear depth and color buffers
 void Drawer::clearBuffers() {
   glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+  glEnable(GL_CULL_FACE);
+  glFrontFace(GL_CW);
+  glEnable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LEQUAL);
 }
 
-// Set the direction of the light source
-void Drawer::setLightDirection() {
-  // set up lights based on te current light's position
-  current_light_pos_ = glm::vec3(initial_light_loc_.x, initial_light_loc_.y,
-                                 initial_light_loc_.z);
-  installLights();
-  // build the inverse-transpose of the MV matrix by concatenating matrices v
-  // and m, as before
-  auto inv_tr_mat = glm::transpose(glm::inverse(mvmat_));
-  glUniformMatrix4fv(glGetUniformLocation(rendering_program_, "norm_matrix"), 1,
-                     GL_FALSE, glm::value_ptr(inv_tr_mat));
-}
-
+// install lighting properties for the current scene.
 void Drawer::installLights() {
   // convert light's position to view space, and save it in a float array
-  light_pos_v = glm::vec3(vmat_ * glm::vec4(current_light_pos_, 1.0));
-  light_pos_ = {light_pos_v.x, light_pos_v.y, light_pos_v.z};
+  auto light_pos_v = glm::vec3(vmat_ * glm::vec4(light_loc_.x,light_loc_.y,light_loc_.z, 1.0));
 
   // set the uniform light and material values in the shader
   glProgramUniform4fv(rendering_program_,
@@ -175,7 +166,7 @@ void Drawer::installLights() {
   glProgramUniform3fv(
       rendering_program_,
       glGetUniformLocation(rendering_program_, "light.position"), 1,
-      reinterpret_cast<float *>(&light_pos_));
+      glm::value_ptr(light_pos_v));
   glProgramUniform4fv(
       rendering_program_,
       glGetUniformLocation(rendering_program_, "material.ambient"), 1,
@@ -198,10 +189,16 @@ void Drawer::setMatrices(double current_time) {
                          glm::vec3(-cam_pos_.x, -cam_pos_.y, -cam_pos_.z));
   mvmat_ = vmat_ *
            glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)) *
-           glm::rotate(glm::mat4(1.0f), static_cast<float>(current_time),
-                       glm::vec3(0.0f, 1.0f, 0.0f));
+           glm::rotate(glm::mat4(1.0f), glm::radians(25.0f),
+                       glm::vec3(1.0f, 0.f, 0.f));
   glUniformMatrix4fv(glGetUniformLocation(rendering_program_, "mv_mat"), 1,
                      GL_FALSE, glm::value_ptr(mvmat_));
+
+  // build the inverse-transpose of the MV matrix by concatenating matrices v
+  // and m, as before
+  auto inv_tr_mat = glm::transpose(glm::inverse(mvmat_));
+  glUniformMatrix4fv(glGetUniformLocation(rendering_program_, "norm_matrix"), 1,
+                     GL_FALSE, glm::value_ptr(inv_tr_mat));
 }
 
 // Activate the texture and bind it to a texture unit

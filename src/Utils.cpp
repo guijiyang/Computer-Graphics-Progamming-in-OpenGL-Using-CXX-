@@ -2,7 +2,7 @@
  * @Author: jiyang Gui
  * @Date: 2023-03-23 18:36:19
  * @LastEditors: jiyang Gui
- * @LastEditTime: 2023-03-30 12:29:46
+ * @LastEditTime: 2023-04-03 16:33:27
  * @Description:
  * guijiyang@163.com
  * Copyright (c) 2023 by jiyang Gui/GuisGame, All Rights Reserved.
@@ -99,7 +99,7 @@ bool checkOpenGLError() {
   return foundError;
 }
 
-string readFile(const char *filename) {
+string readShaderFile(const char *filename) {
   string contents{};
   ifstream file(filename, ios::in);
   if (!file.is_open()) {
@@ -114,16 +114,16 @@ string readFile(const char *filename) {
   file.close();
   return contents;
 }
-GLuint createShaderProgram() {
+GLuint createShaderProgram(const char* vert_shader_name, const char*frag_shader_name) {
   // register utils logger if not already registered
   el::Loggers::getLogger("utils");
 
   GLint vert_compiled;
   GLint frag_compiled;
   GLint linked;
-  auto vert_shader_str = readFile("shader.vert");
+  auto vert_shader_str = readShaderFile(vert_shader_name);
   auto vert_shader_cstr = vert_shader_str.c_str();
-  auto frag_shader_str = readFile("shader.frag");
+  auto frag_shader_str = readShaderFile(frag_shader_name);
   auto frag_shader_cstr = frag_shader_str.c_str();
   auto vert_shader = glCreateShader(GL_VERTEX_SHADER);
   auto frag_shader = glCreateShader(GL_FRAGMENT_SHADER);

@@ -2,7 +2,7 @@
  * @Author: jiyang Gui
  * @Date: 2023-03-23 15:20:19
  * @LastEditors: jiyang Gui
- * @LastEditTime: 2023-04-01 14:13:10
+ * @LastEditTime: 2023-04-03 14:28:33
  * @Description:
  * guijiyang@163.com
  * Copyright (c) 2023 by jiyang Gui/GuisGame, All Rights Reserved.
@@ -14,7 +14,7 @@
 #include <gl/glew.h>
 
 namespace opengltest {
-GLuint createShaderProgram();
+GLuint createShaderProgram(const char* vert_shader_name="shader.vert", const char*frag_shader_name="shader.frag");
 
 class Image {
 public:

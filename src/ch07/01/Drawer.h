@@ -2,7 +2,7 @@
  * @Author: jiyang Gui
  * @Date: 2023-03-28 18:41:04
  * @LastEditors: jiyang Gui
- * @LastEditTime: 2023-04-01 16:52:30
+ * @LastEditTime: 2023-04-04 09:35:46
  * @Description: 
  * guijiyang@163.com
  * Copyright (c) 2023 by jiyang Gui/GuisGame, All Rights Reserved. 
@@ -20,30 +20,14 @@ class Drawer {
 private:
   std::array<GLuint, 1> vert_arr_obj_{};
   std::array<GLuint, 4> vert_buf_obj_{};
-  Position cam_pos_{0.f, 0.f, 5.f};
-  // // represent location of model view matrix in shader
-  // GLuint mv_loc_;
-  // // represent projection matrix in shader
-  // GLuint proj_loc_;
-  
-  // GLuint norm_loc_;
-
-  // GLuint global_amb_loc_;
-  // GLuint amb_loc_;
-  // GLuint diff_loc_;
-  // GLuint sepc_loc_;
-  // GLuint pos_loc_;
-  // GLuint m_amb_loc_;
-  // GLuint m_diff_loc_;
-  // GLuint m_spec_loc_;
-  // GLuint m_shi_loc_;
-
-  glm::vec3 current_light_pos_;
-  glm::vec3 light_pos_v;
-  Position light_pos_;
+  Position cam_pos_{0.f, 0.2f, 6.f};
 
   // initial light location
-  glm::vec3 initial_light_loc_{5.0f,2.0f,2.0f};
+  glm::vec3 light_loc_{-3.8f, 2.2f, 1.1f};
+
+  // sphere used for drawing
+  Torus torus_{0.6f,0.4f,48};
+  Position torus_loc_{1.6f, 0.f, -0.3f};
 
   // white light properties
   std::array<float,4> global_ambient_{0.7f,0.7f,0.7f,1.0f};
@@ -57,8 +41,7 @@ private:
   // a shader program ID
   GLuint rendering_program_;
   GLuint texture_id_;
-  // sphere used for drawing
-  Torus torus_{};
+  
   // projection matrix
   static glm::mat4 kProjMat;
   // model view matrix
