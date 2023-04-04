@@ -2,7 +2,7 @@
  * @Author: jiyang Gui
  * @Date: 2023-03-25 20:41:28
  * @LastEditors: jiyang Gui
- * @LastEditTime: 2023-03-25 21:12:01
+ * @LastEditTime: 2023-04-04 15:44:28
  * @Description:
  * guijiyang@163.com
  * Copyright (c) 2023 by jiyang Gui/GuisGame, All Rights Reserved.
@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
   el::Configurations conf("opengltest.conf");
   el::Loggers::setDefaultConfigurations(conf, true);
 
-  LOG(INFO) << "start 4_4.";
+  LOG(INFO) << "start 4_4p.";
   try {
     opengltest::Drawer app;
     app.run();

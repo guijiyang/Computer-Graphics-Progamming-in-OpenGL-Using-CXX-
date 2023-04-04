@@ -2,7 +2,7 @@
  * @Author: jiyang Gui
  * @Date: 2023-03-25 19:13:29
  * @LastEditors: jiyang Gui
- * @LastEditTime: 2023-03-26 16:12:35
+ * @LastEditTime: 2023-04-04 15:44:01
  * @Description:
  * guijiyang@163.com
  * Copyright (c) 2023 by jiyang Gui/GuisGame, All Rights Reserved.
@@ -247,7 +247,7 @@ void Drawer::run() {
   }
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-  p_window_ = glfwCreateWindow(600, 600, "4_4", nullptr, nullptr);
+  p_window_ = glfwCreateWindow(600, 600, "4_3p", nullptr, nullptr);
   glfwMakeContextCurrent(p_window_);
 
   if (glewInit() != GLEW_OK) {

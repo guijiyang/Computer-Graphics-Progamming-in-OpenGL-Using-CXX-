@@ -189,7 +189,7 @@ void Drawer::run() {
   }
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-  p_window_ = glfwCreateWindow(600, 600, "4_4", nullptr, nullptr);
+  p_window_ = glfwCreateWindow(600, 600, "4_4p", nullptr, nullptr);
   glfwMakeContextCurrent(p_window_);
 
   if (glewInit() != GLEW_OK) {
