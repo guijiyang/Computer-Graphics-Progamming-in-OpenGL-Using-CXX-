@@ -8,7 +8,7 @@ function all_targets()
     table.insert(items, major .. "_" .. dir)
     table.insert(items, dir .. "/*.cpp")
     table.insert(items, path.join(curdir, dir, "shader/*"))
-    -- print(path.translate(curdir, dir, "shader/*"))
+    table.insert(items, path.join(curdir,dir))
     table.insert(targets, items)
   end
   return targets

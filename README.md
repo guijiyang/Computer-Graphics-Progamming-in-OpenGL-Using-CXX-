@@ -8,7 +8,7 @@
 - 3) after config down, build with:
 `xmake b`
 
-## specific
-this code depend on library's `glfw`, `glew` and `opengl`. so at xmake config stage maybe download those library and install(if xmake can't find those library).
+## Specific
+this code depend on library such as `glfw`, `glew`, `opengl`, etc. so at xmake config stage may download those librarys and build(if xmake can't find those library).
 
 

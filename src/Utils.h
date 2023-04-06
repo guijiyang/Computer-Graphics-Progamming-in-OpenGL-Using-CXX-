@@ -2,7 +2,7 @@
  * @Author: jiyang Gui
  * @Date: 2023-03-23 15:20:19
  * @LastEditors: jiyang Gui
- * @LastEditTime: 2023-04-03 14:28:33
+ * @LastEditTime: 2023-04-06 16:44:48
  * @Description:
  * guijiyang@163.com
  * Copyright (c) 2023 by jiyang Gui/GuisGame, All Rights Reserved.
@@ -14,16 +14,27 @@
 #include <gl/glew.h>
 
 namespace opengltest {
-GLuint createShaderProgram(const char* vert_shader_name="shader.vert", const char*frag_shader_name="shader.frag");
+GLuint createShaderProgram(const char *vert_shader_name = "shader.vert",
+                           const char *frag_shader_name = "shader.frag");
+
+enum class STBIChannelNumbers
+{
+   kSTBIDefault = 0, // only used for desired_channels
+
+   kSTBIGrey       = 1,
+   kSTBIGreyAlpha = 2,
+   kSTBIRgb        = 3,
+   kSTBIRgbAlpha  = 4
+};
 
 class Image {
 public:
-  Image(const char *filename) noexcept;
+  Image(const char *filename, STBIChannelNumbers stbi_channels=STBIChannelNumbers::kSTBIRgbAlpha, int vertical_flip=1) noexcept;
   Image(aiTexture *texture) noexcept;
 
   ~Image() noexcept;
 
-  void *data() const { return data_; }
+  unsigned char *data() const { return data_; }
 
   int width() const { return width_; }
 
@@ -32,7 +43,7 @@ public:
   int channels() const { return channels_; }
 
 private:
-  void *data_ = nullptr;
+  unsigned char *data_ = nullptr;
   int width_ = 0;
   int height_ = 0;
   int channels_ = 0;
@@ -94,4 +105,7 @@ constexpr std::array<float, 4> bronzeSpecular() {
   return a;
 }
 constexpr float bronzeShininess() { return 25.6f; }
+
+GLuint loadCubeMap(const char *mapDir);
+
 } // namespace opengltest
