@@ -8,12 +8,15 @@ set_languages("cxxlatest")
 add_rules("mode.debug", "mode.release", "mode.releasedbg")
 
 add_requireconfs("*", { system = false })
-add_requires("glfw", "opengl", "glew", "glm", "easyloggingpp", "assimp", "yaml-cpp")
+add_requires("glfw 3.3.8", "opengl", "glew 2.2.0", "glm 1.0.0", "easyloggingpp", "assimp 5.2.5", "yaml-cpp 0.7.0")
+add_requires("lua 5.4.4")
+-- set_policy("package.precompiled", false)
 -- add_requires("easyloggingpp",{debug=true})
 
 add_defines("STB_IMAGE_IMPLEMENTATION", "STB_IMAGE_WRITE_IMPLEMENTATION")
+add_defines("GLM_ENABLE_EXPERIMENTAL")
 -- add_requires("opengl")
 -- includes( "xmake/Utils.lua")
+add_includedirs("$(projectdir)/src")
 includes("xmake/Utils.lua", "**/xmake.lua")
 
-add_includedirs("src")

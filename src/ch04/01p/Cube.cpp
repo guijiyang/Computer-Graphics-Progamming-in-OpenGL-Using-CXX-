@@ -8,38 +8,38 @@
 #include <stdexcept>
 namespace opengltest {
 void Cube::setupVertices() {
-  float vertex_positions[72]={
-    -1.0f,0.0f,-1.0f, //left middle back
-    0.0f,1.0f,0.0f,   //middle top middle 
-    1.0f,0.0f,-1.0f,  //right middle back
+  float vertex_positions[72] = {
+      -1.0f, 0.0f,  -1.0f, // left middle back
+      0.0f,  1.0f,  0.0f,  // middle top middle
+      1.0f,  0.0f,  -1.0f, // right middle back
 
-    -1.0f,0.0f,-1.0f, //left middle back
-    1.0f,0.0f,-1.0f,  //right middle back
-    0.0f,-1.0f,0.0f, //middle bottom middle
+      -1.0f, 0.0f,  -1.0f, // left middle back
+      1.0f,  0.0f,  -1.0f, // right middle back
+      0.0f,  -1.0f, 0.0f,  // middle bottom middle
 
-    -1.0f,0.0f,-1.0f, //left middle back
-    -1.0f,0.0f,1.0f, //left middle front
-    0.0f,1.0f,0.0f,   //middle top middle 
+      -1.0f, 0.0f,  -1.0f, // left middle back
+      -1.0f, 0.0f,  1.0f,  // left middle front
+      0.0f,  1.0f,  0.0f,  // middle top middle
 
-    -1.0f,0.0f,-1.0f, //left middle back
-    0.0f,-1.0f,0.0f, //middle bottom middle
-    -1.0f,0.0f,1.0f, //left middle front
+      -1.0f, 0.0f,  -1.0f, // left middle back
+      0.0f,  -1.0f, 0.0f,  // middle bottom middle
+      -1.0f, 0.0f,  1.0f,  // left middle front
 
-    1.0f,0.0f,1.0f, //right middle front
-    1.0f,0.0f,-1.0f,  //right middle back
-    0.0f,1.0f,0.0f,   //middle top middle 
+      1.0f,  0.0f,  1.0f,  // right middle front
+      1.0f,  0.0f,  -1.0f, // right middle back
+      0.0f,  1.0f,  0.0f,  // middle top middle
 
-    1.0f,0.0f,-1.0f,  //right middle back
-    1.0f,0.0f,1.0f, //right middle front
-    0.0f,-1.0f,0.0f, //middle bottom middle
+      1.0f,  0.0f,  -1.0f, // right middle back
+      1.0f,  0.0f,  1.0f,  // right middle front
+      0.0f,  -1.0f, 0.0f,  // middle bottom middle
 
-    -1.0f,0.0f,1.0f, //left middle front
-    1.0f,0.0f,1.0f, //right middle front
-    0.0f,1.0f,0.0f,   //middle top middle 
+      -1.0f, 0.0f,  1.0f, // left middle front
+      1.0f,  0.0f,  1.0f, // right middle front
+      0.0f,  1.0f,  0.0f, // middle top middle
 
-    1.0f,0.0f,1.0f, //right middle front
-    -1.0f,0.0f,1.0f, //left middle front
-    0.0f,-1.0f,0.0f, //middle bottom middle
+      1.0f,  0.0f,  1.0f, // right middle front
+      -1.0f, 0.0f,  1.0f, // left middle front
+      0.0f,  -1.0f, 0.0f, // middle bottom middle
   };
   // create VAO
   glGenVertexArrays(static_cast<GLsizei>(vert_arr_obj_.size()),
@@ -91,41 +91,41 @@ void Cube::display(GLFWwindow *window, double current_time) {
   auto vmat = glm::translate(glm::mat4(1.0f),
                              glm::vec3(-cam_pos_.x, -cam_pos_.y, -cam_pos_.z));
 
-    // use current time to compute different translations in x,y and z
-    auto tmat = glm::translate(glm::mat4(1.0f),
-                               glm::vec3(sin(0.35f * current_time) * 8.0f,
-                                         cos(0.52f * current_time) * 8.0f,
-                                         sin(0.7f * current_time) * 8.0f));
-    // rotations
-    auto rmat =
-        glm::rotate(glm::mat4(1.0f), 1.75f * static_cast<float>(current_time),
-                    glm::vec3(0.0f, 1.0f, 0.0f));
-    rmat = glm::rotate(rmat, 1.75f * static_cast<float>(current_time),
-                       glm::vec3(1.0f, 0.0f, 0.0f));
-    rmat = glm::rotate(rmat, 1.75f * static_cast<float>(current_time),
-                       glm::vec3(0.0f, 0.0f, 1.0f));
+  // use current time to compute different translations in x,y and z
+  auto tmat = glm::translate(glm::mat4(1.0f),
+                             glm::vec3(sin(0.35f * current_time) * 8.0f,
+                                       cos(0.52f * current_time) * 8.0f,
+                                       sin(0.7f * current_time) * 8.0f));
+  // rotations
+  auto rmat =
+      glm::rotate(glm::mat4(1.0f), 1.75f * static_cast<float>(current_time),
+                  glm::vec3(0.0f, 1.0f, 0.0f));
+  rmat = glm::rotate(rmat, 1.75f * static_cast<float>(current_time),
+                     glm::vec3(1.0f, 0.0f, 0.0f));
+  rmat = glm::rotate(rmat, 1.75f * static_cast<float>(current_time),
+                     glm::vec3(0.0f, 0.0f, 1.0f));
 
-    // auto mmat = glm::translate(glm::mat4(1.0f),
-    //                            glm::vec3(cub_pos_.x, cub_pos_.y, cub_pos_.z));
-    auto mmat = tmat * rmat;
-    auto mvmat = vmat * mmat;
+  // auto mmat = glm::translate(glm::mat4(1.0f),
+  //                            glm::vec3(cub_pos_.x, cub_pos_.y, cub_pos_.z));
+  auto mmat = tmat * rmat;
+  auto mvmat = vmat * mmat;
 
-    //  copy perspective matrix and mv matrix to corresponding uniform variables
-    glUniformMatrix4fv(mv_loc_, 1, GL_FALSE, glm::value_ptr(mvmat));
-    glUniformMatrix4fv(proj_loc_, 1, GL_FALSE, glm::value_ptr(pmat));
+  //  copy perspective matrix and mv matrix to corresponding uniform variables
+  glUniformMatrix4fv(mv_loc_, 1, GL_FALSE, glm::value_ptr(mvmat));
+  glUniformMatrix4fv(proj_loc_, 1, GL_FALSE, glm::value_ptr(pmat));
 
-    // associate VBO with the corresponding vertex attribute in the vertex
-    // shader
-    glBindBuffer(GL_ARRAY_BUFFER, vert_buff_obj_[0]);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(0);
+  // associate VBO with the corresponding vertex attribute in the vertex
+  // shader
+  glBindBuffer(GL_ARRAY_BUFFER, vert_buff_obj_[0]);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(0);
 
-    // adjust opengl settings(preform hidden surface removal) and draw model
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-    glEnable(GL_CCW);
-    // glDrawArrays(GL_TRIANGLES, 0, 36);
-    glDrawArrays(GL_TRIANGLES, 0, 24);
+  // adjust opengl settings(preform hidden surface removal) and draw model
+  glEnable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LEQUAL);
+  glEnable(GL_CCW);
+  // glDrawArrays(GL_TRIANGLES, 0, 36);
+  glDrawArrays(GL_TRIANGLES, 0, 24);
 }
 
 void Cube::run() {

@@ -1,6 +1,6 @@
 add_packages("glfw", "opengl", "glew", "glm", "easyloggingpp","yaml-cpp")
 
-add_defines("NOMINMAX")
+-- add_defines("NOMINMAX")
 -- macro that tells GLFW to expose the Win32 API symbols
 -- add_defines("GLFW_EXPOSE_NATIVE_WIN32")
 

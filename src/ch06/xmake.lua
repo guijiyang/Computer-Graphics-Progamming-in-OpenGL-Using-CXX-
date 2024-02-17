@@ -1,6 +1,6 @@
 add_packages("glfw", "opengl", "glew", "glm", "easyloggingpp")
 
-add_defines("NOMINMAX")
+-- add_defines("NOMINMAX")
 add_cxxflags("cl::/wd4819")
 local curdir = os.curdir()
 local major = path.relative(curdir, "../")

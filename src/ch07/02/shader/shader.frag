@@ -26,9 +26,6 @@ uniform vec4 globalAmbient;
 uniform PositionLight light;
 uniform Material material;
 
-// define gamma value
-const float gamma = 2.2;
-
 void main() {
   // normalize the light,normal and view vectors
   vec3 l = normalize(varingLightDir);
@@ -45,7 +42,5 @@ void main() {
   0.0); vec3 specular = light.specular.xyz * material.specular.xyz *
                   pow(max(dot(v, r), 0.0), material.shininess);
 
-  // apply gamma correction
-  vec3 finalColor = pow(ambient + specular + diffuse, vec3(1.0 / gamma));
   fragColor = vec4((ambient + specular + diffuse), 1.0);
 }

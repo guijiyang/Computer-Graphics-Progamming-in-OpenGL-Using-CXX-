@@ -2,7 +2,7 @@
  * @Author: jiyang Gui
  * @Date: 2023-03-23 18:36:19
  * @LastEditors: jiyang Gui
- * @LastEditTime: 2023-04-06 18:39:31
+ * @LastEditTime: 2023-04-09 23:24:42
  * @Description:
  * guijiyang@163.com
  * Copyright (c) 2023 by jiyang Gui/GuisGame, All Rights Reserved.
@@ -77,7 +77,7 @@ static void printShaderLog(GLuint shader) {
     glGetShaderInfoLog(shader, len, &chWrittn, log);
     // auto logger = el::Loggers::getLogger("utils");
     // logger->warn("Shader Info Log: ", log);
-    CLOG(WARNING, "utils") << "Shader Info Log" << log;
+    CLOG(WARNING, "utils") << "Shader Info Log " << log;
     // cout << "Shader Info Log: " << log << endl;
     free(log);
   }

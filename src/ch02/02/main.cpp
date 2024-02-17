@@ -97,6 +97,7 @@ GLuint createShaderProgram() {
 }
 
 void init(GLFWwindow *window) {
+  // create shader program
   renderingProgram = createShaderProgram();
 
   // VAO : Vertex Array Objects, OpenGL requires at least one VAO
@@ -105,6 +106,7 @@ void init(GLFWwindow *window) {
 }
 
 void display(GLFWwindow *window, double currentTime) {
+  // clear the back buffer
   glClear(GL_DEPTH_BUFFER_BIT);
   glClearColor(0.0, 0.0, 0.0, 1);
   glClear(GL_COLOR_BUFFER_BIT); // clear background to black, each frame
